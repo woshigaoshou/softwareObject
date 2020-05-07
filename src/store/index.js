@@ -1,20 +1,24 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import mutations from './mutations'
+import actions from './actions'
+
 Vue.use(Vuex)
 
+const state = {
+  Authorization: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+  loginForm: {
+    userID: "",
+    userPsw: "",
+    randString: ""
+  }
+}
+
 export default new Vuex.Store({
-  state: {
-    Authorization: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : ''
-  },
-  mutations: {
-    changeLogin(state, user) {
-      state.Authorization = user.Authorization;
-      localStorage.setItem('Authorization', user.Authorization)
-    }
-  },
-  actions: {
-  },
+  state,
+  mutations,
+  actions,
   modules: {
   }
 })

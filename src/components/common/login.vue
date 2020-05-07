@@ -22,6 +22,7 @@
 
 <script>
 import { request } from "../../network/request/request";
+import { CHANGE_LOGIN, SUBUSER } from "../../store/mutation-types";
 
 export default {
   name: "login",
@@ -46,25 +47,33 @@ export default {
       });
     },
     submit() {
-      if (this.account === "" || this.pwd === "") alert("账号或密码为空！");
-      console.log(this.loginForm);
-      request({
-        url: "/oauth/login",
-        data: this.loginForm,
-        method: "post"
-      }).then(res => {
-        console.log(res);
-        if (res.code !== 200) {
-          // console.log(res.message);
-          alert(res.message);
-          this.$router.push("/login");
-        } else {
-          this.userToken = "Bearer " + res.data.accessToken;
-          this.$store.commit("changeLogin", { Authorization: this.userToken });
-          alert("登录成功！");
-          this.$router.push("/index");
-        }
-      });
+      if (this.loginForm.userID === "" || this.loginForm.userPsw === "") {
+        alert("账号或密码为空！");
+      }
+      // console.log(this.loginForm);
+      else {
+        request({
+          url: "/oauth/login",
+          data: this.loginForm,
+          method: "post"
+        }).then(res => {
+          console.log(res);
+          if (res.code !== 200) {
+            // console.log(res.message);
+            alert(res.message);
+            this.$router.push("/login");
+          } else {
+            this.userToken = "Bearer " + res.data.accessToken;
+            this.$store.commit(CHANGE_LOGIN, {
+              Authorization: this.userToken
+            });
+            this.$store.commit(SUBUSER, this.loginForm);
+            alert("登录成功！");
+            console.log(res.message);
+            this.$router.push("/index");
+          }
+        });
+      }
     },
     register() {
       location.href = "/register";
